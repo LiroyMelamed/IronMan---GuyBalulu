@@ -23,15 +23,37 @@ ensure_jump_key() {
   ssh -i "$SSH_KEY" -o BatchMode=yes "$JUMP" "chmod 600 ${REMOTE_KEY}"
 }
 
+use_jump=true
+if ssh -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=8 "$FRONT" "echo ok" >/dev/null 2>&1; then
+  use_jump=false
+fi
+
 front_ssh() {
-  ssh -i "$SSH_KEY" -o BatchMode=yes "$JUMP" \
-    ssh -i "$REMOTE_KEY" -o StrictHostKeyChecking=no -o BatchMode=yes "$FRONT" "$@"
+  if [[ "$use_jump" == true ]]; then
+    ssh -i "$SSH_KEY" -o BatchMode=yes "$JUMP" \
+      ssh -i "$REMOTE_KEY" -o StrictHostKeyChecking=no -o BatchMode=yes "$FRONT" "$@"
+  else
+    ssh -i "$SSH_KEY" -o BatchMode=yes "$FRONT" "$@"
+  fi
+}
+
+front_scp() {
+  local src="$1" dest="$2"
+  if [[ "$use_jump" == true ]]; then
+    scp -i "$SSH_KEY" -o BatchMode=yes "$src" "${JUMP}:/tmp/ironman_scp_tmp"
+    ssh -i "$SSH_KEY" -o BatchMode=yes "$JUMP" \
+      "scp -i ${REMOTE_KEY} -o BatchMode=yes /tmp/ironman_scp_tmp ${FRONT}:${dest} && rm -f /tmp/ironman_scp_tmp"
+  else
+    scp -i "$SSH_KEY" -o BatchMode=yes "$src" "${FRONT}:${dest}"
+  fi
 }
 
 cd "$ROOT"
 
 echo "# Ensuring jump deploy key…"
-ensure_jump_key
+if [[ "$use_jump" == true ]]; then
+  ensure_jump_key
+fi
 
 echo "# Ensuring remote dir ${REMOTE_DIR}…"
 front_ssh "mkdir -p ${REMOTE_DIR}/public/uploads"
@@ -89,17 +111,15 @@ ADMIN_PASSWORD=${ADMIN_PASSWORD}
 EOF
 
 echo "# Writing production env…"
-scp -i "$SSH_KEY" -o BatchMode=yes "$ENV_TMP" "${JUMP}:/tmp/ironman.env.production"
-ssh -i "$SSH_KEY" -o BatchMode=yes "$JUMP" \
-  "scp -i ${REMOTE_KEY} -o BatchMode=yes /tmp/ironman.env.production ${FRONT}:${REMOTE_DIR}/.env.production && rm -f /tmp/ironman.env.production"
+front_scp "$ENV_TMP" "${REMOTE_DIR}/.env.production"
 rm -f "$ENV_TMP"
 
 echo "# Installing, migrating, building…"
 front_ssh "bash -lc '
   set -euo pipefail
   cd ${REMOTE_DIR}
-  export \$(grep -v \"^#\" .env.production | xargs)
-  npm ci
+  npm ci --include=dev
+  set -a && source .env.production && set +a
   npx prisma generate
   npx prisma db push
   npm run db:seed
@@ -114,16 +134,14 @@ front_ssh "bash -lc '
   fi
   cd ${REMOTE_DIR}
   set -a && source .env.production && set +a
-  pm2 start npm --name ironman-web --cwd ${REMOTE_DIR} -- start -- -H 127.0.0.1 -p ${PORT}
+  pm2 start npm --name ironman-web -- start -- -H 127.0.0.1 -p ${PORT}
   pm2 save
 '"
 
 echo "# Nginx ${DOMAIN}…"
 NGX_TMP="$(mktemp)"
 sed "s/ironman.mela-media.co.il/${DOMAIN}/g" "$ROOT/deploy/nginx-ironman.conf" > "$NGX_TMP"
-scp -i "$SSH_KEY" -o BatchMode=yes "$NGX_TMP" "${JUMP}:/tmp/ironman.nginx"
-ssh -i "$SSH_KEY" -o BatchMode=yes "$JUMP" \
-  "scp -i ${REMOTE_KEY} -o BatchMode=yes /tmp/ironman.nginx ${FRONT}:/etc/nginx/sites-available/ironman && rm -f /tmp/ironman.nginx"
+front_scp "$NGX_TMP" "/etc/nginx/sites-available/ironman"
 rm -f "$NGX_TMP"
 front_ssh "ln -sfn /etc/nginx/sites-available/ironman /etc/nginx/sites-enabled/ironman && nginx -t && systemctl reload nginx"
 
