@@ -22,7 +22,7 @@ interface ContactSectionProps {
 export function ContactSection({
   content,
   businessEmail = "info@ironman.co.il",
-  businessAddress = "רחוב התעשייה 1, תל אביב",
+  businessAddress = "המסגר 34, נתניה",
 }: ContactSectionProps) {
   const [formData, setFormData] = useState({ name: "", phone: "", material: "", message: "" });
   const managers = getManagersFromContent(content);

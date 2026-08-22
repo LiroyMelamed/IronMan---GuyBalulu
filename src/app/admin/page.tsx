@@ -21,7 +21,7 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-terex-gray p-6" dir="rtl">
+    <div className="p-6">
       <div className="mx-auto max-w-5xl">
         <AdminHeader userEmail={session.user.email ?? ""} />
         <AdminDashboard

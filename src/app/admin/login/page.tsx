@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-terex-gray">
+    <div className="min-h-screen flex items-center justify-center px-6 py-16">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-black">איש הברזל Admin</CardTitle>

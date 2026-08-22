@@ -9,7 +9,7 @@ FRONT="${FRONTEND_HOST:-root@84.46.253.85}"
 REMOTE_KEY="/tmp/ironman_deploy_key"
 REMOTE_DIR="${REMOTE_DIR:-/opt/ironman}"
 PORT="${IRONMAN_PORT:-3012}"
-DOMAIN="${IRONMAN_DOMAIN:-ironman.mela-media.co.il}"
+DOMAIN="${IRONMAN_DOMAIN:-theironman.co.il}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 read_env_val() {

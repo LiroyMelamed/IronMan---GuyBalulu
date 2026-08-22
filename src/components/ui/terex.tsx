@@ -74,7 +74,10 @@ export function TerexButton({
 export function TerexHeroBackdrop({ text, className }: { text: string; className?: string }) {
   return (
     <div
-      className={cn("absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none", className)}
+      className={cn(
+        "absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none px-6 md:px-12",
+        className
+      )}
       aria-hidden="true"
     >
       <span className="terex-giant-bg-text">{text}</span>

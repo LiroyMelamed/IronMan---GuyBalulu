@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { IshHaBarzelLogo } from "@/components/brand/IshHaBarzelLogo";
+import { PoweredByMelaMedia } from "@/components/layout/PoweredByMelaMedia";
 import { TerexButton } from "@/components/ui/terex";
 import { getContentValue, type SiteContentMap } from "@/lib/content";
 
@@ -12,7 +13,10 @@ export function NavbarClient({ content }: { content: SiteContentMap }) {
       className="fixed top-0 left-0 right-0 z-50 bg-white/95 border-b border-terex-gray backdrop-blur-sm"
       initial={false}
     >
-      <nav className="flex items-center justify-between max-w-[100vw] px-4 md:px-8" aria-label="ניווט ראשי">
+      <nav
+        className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 md:px-12 lg:px-16"
+        aria-label="ניווט ראשי"
+      >
         <Link href="/" aria-label="איש הברזל — דף הבית">
           <IshHaBarzelLogo src={getContentValue(content, "logo_image")} variant="full" />
         </Link>
@@ -50,7 +54,7 @@ export function FooterClient({ content }: { content: SiteContentMap }) {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
     >
-      <div className="flex w-full flex-col items-center justify-between gap-8 md:flex-row md:items-center md:gap-16">
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-8 md:flex-row md:items-center md:gap-16">
         <Link href="/" aria-label="איש הברזל — דף הבית" className="shrink-0">
           <IshHaBarzelLogo
             src={getContentValue(content, "logo_image")}
@@ -61,6 +65,9 @@ export function FooterClient({ content }: { content: SiteContentMap }) {
         <p className="max-w-3xl text-center font-mono text-[10px] uppercase leading-relaxed tracking-[0.15em] text-white/60 md:text-left">
           {getContentValue(content, "footer_text")}
         </p>
+      </div>
+      <div className="mt-8 flex justify-center">
+        <PoweredByMelaMedia variant="dark" />
       </div>
     </motion.footer>
   );

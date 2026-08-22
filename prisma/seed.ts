@@ -73,12 +73,12 @@ async function main() {
       businessName: "איש הברזל — קניית מתכות",
       businessPhone: "+972 50-756-2842",
       businessEmail: "info@ironman.co.il",
-      businessAddress: "רחוב התעשייה 1",
-      businessCity: "תל אביב",
-      businessRegion: "מרכז",
-      businessPostal: "6100000",
-      latitude: 32.0853,
-      longitude: 34.7818,
+      businessAddress: "המסגר 34",
+      businessCity: "נתניה",
+      businessRegion: "השרון",
+      businessPostal: "4240202",
+      latitude: 32.3315,
+      longitude: 34.8568,
     },
   });
 

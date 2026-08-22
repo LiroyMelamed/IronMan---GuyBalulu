@@ -53,12 +53,14 @@
   .terex-giant-bg-text {
     font-family: var(--font-rubik-mono), monospace;
     font-weight: 400;
-    font-size: clamp(5rem, 18vw, 14rem);
-    line-height: 0.85;
-    color: rgba(138, 138, 138, 0.18);
+    font-size: clamp(3rem, 7vw, 7.5rem);
+    line-height: 0.9;
+    color: rgba(138, 138, 138, 0.16);
     white-space: nowrap;
     user-select: none;
     pointer-events: none;
+    max-width: 100%;
+    text-align: center;
   }
 
   .terex-section-label {
