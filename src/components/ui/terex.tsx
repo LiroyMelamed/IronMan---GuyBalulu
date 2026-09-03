@@ -99,7 +99,7 @@ export function TerexSectionHeader({ label, title, subtitle, id, light = false }
   return (
     <motion.header
       className="px-6 md:px-12 lg:px-16 py-12 md:py-16"
-      initial={{ opacity: 0, y: 24 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
@@ -147,7 +147,7 @@ export function TerexNumberBlocks({ blocks }: { blocks: NumberBlock[] }) {
             "relative p-8 md:p-10 min-h-[280px] flex flex-col",
             block.accent ? "bg-terex-navy text-white" : "bg-terex-gray"
           )}
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: i * 0.1, duration: 0.5 }}
@@ -211,7 +211,7 @@ export function TerexMediaCard({
   const content = (
     <motion.article
       className="bg-white flex flex-col h-full group"
-      initial={{ opacity: 0, y: 20 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
@@ -291,7 +291,7 @@ export function TerexSection({
       id={id}
       aria-labelledby={ariaLabelledby}
       className={cn("relative", className)}
-      initial={{ opacity: 0 }}
+      initial={false}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.4 }}

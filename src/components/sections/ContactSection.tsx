@@ -62,7 +62,7 @@ export function ContactSection({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 px-6 md:px-12 lg:px-16 pb-16 md:pb-24">
         <motion.div
           className="lg:col-span-3"
-          initial={{ opacity: 0, x: -20 }}
+          initial={false}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
@@ -122,7 +122,7 @@ export function ContactSection({
 
         <motion.div
           className="lg:col-span-2 flex flex-col gap-4 pt-8 lg:pt-0 lg:pr-8"
-          initial={{ opacity: 0, x: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -141,7 +141,7 @@ export function ContactSection({
             <motion.div
               key={item.key}
               className="bg-white/10 border border-white/15 p-6"
-              initial={{ opacity: 0, y: 16 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.15 + i * 0.08 }}

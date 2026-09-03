@@ -42,7 +42,11 @@ In Cloudflare → **DNS → Records**:
 
 ## Step 3 — Cloudflare SSL
 
-**SSL/TLS → Overview** → set encryption mode to **Flexible**.
+**SSL/TLS → Overview** → preferred mode: **Full** (origin serves HTTPS on `:443` with the deploy self-signed cert).
+
+**Flexible** also works (Cloudflare → origin `:80` only). Do **not** use **Full (strict)** unless you install a real origin certificate (Let’s Encrypt or Cloudflare Origin CA).
+
+If HTTPS shows NestJS JSON `Route GET:/ not found`, Cloudflare is on **Full** but nginx has no ironman `:443` vhost — redeploy or ensure `/etc/nginx/sites-enabled/ironman` includes the TLS server block.
 
 ---
 

@@ -50,7 +50,7 @@ export function FooterClient({ content }: { content: SiteContentMap }) {
   return (
     <motion.footer
       className="w-full border-t border-white/10 bg-terex-navy py-10 px-6 md:px-12 lg:px-16"
-      initial={{ opacity: 0 }}
+      initial={false}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
     >

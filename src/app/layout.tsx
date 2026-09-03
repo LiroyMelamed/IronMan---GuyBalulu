@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Heebo, Rubik_Mono_One } from "next/font/google";
 import { getSeoMetadata } from "@/lib/content";
+import { buildNextMetadata } from "@/lib/seo";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -20,36 +21,7 @@ const rubikMono = Rubik_Mono_One({
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoMetadata();
-
-  return {
-    title: seo.pageTitle,
-    description: seo.metaDescription,
-    keywords: seo.keywords.split(", ").map((k) => k.trim()),
-    metadataBase: new URL(seo.canonicalUrl),
-    alternates: {
-      canonical: seo.canonicalUrl,
-    },
-    icons: {
-      icon: "/favicon.svg",
-    },
-    openGraph: {
-      title: seo.ogTitle,
-      description: seo.ogDescription,
-      url: seo.canonicalUrl,
-      siteName: seo.businessName,
-      locale: "he_IL",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: seo.ogTitle,
-      description: seo.ogDescription,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  return buildNextMetadata(seo);
 }
 
 export const viewport: Viewport = {

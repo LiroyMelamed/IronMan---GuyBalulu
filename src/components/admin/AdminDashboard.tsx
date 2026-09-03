@@ -23,6 +23,11 @@ interface MaterialItem {
   title: string;
   description: string;
   keyword: string;
+  slug: string;
+  longDescription: string;
+  priceRange?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   icon: string;
   imageUrl?: string | null;
   sortOrder: number;
@@ -247,8 +252,39 @@ export function AdminDashboard({
                       />
                     </div>
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label>Slug (URL)</Label>
+                      <Input
+                        dir="ltr"
+                        value={material.slug}
+                        onChange={(e) =>
+                          setMaterials((prev) =>
+                            prev.map((m, i) =>
+                              i === index ? { ...m, slug: e.target.value.toLowerCase() } : m
+                            )
+                          )
+                        }
+                        placeholder="copper"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>טווח מחיר</Label>
+                      <Input
+                        value={material.priceRange ?? ""}
+                        onChange={(e) =>
+                          setMaterials((prev) =>
+                            prev.map((m, i) =>
+                              i === index ? { ...m, priceRange: e.target.value } : m
+                            )
+                          )
+                        }
+                        placeholder="25–32 ₪ לק״ג"
+                      />
+                    </div>
+                  </div>
                   <div className="space-y-2">
-                    <Label>תיאור</Label>
+                    <Label>תיאור קצר (כרטיס)</Label>
                     <Textarea
                       value={material.description}
                       onChange={(e) =>
@@ -260,6 +296,49 @@ export function AdminDashboard({
                       }
                       rows={2}
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>תוכן SEO (דף ייעודי)</Label>
+                    <Textarea
+                      value={material.longDescription}
+                      onChange={(e) =>
+                        setMaterials((prev) =>
+                          prev.map((m, i) =>
+                            i === index ? { ...m, longDescription: e.target.value } : m
+                          )
+                        )
+                      }
+                      rows={8}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label>כותרת SEO</Label>
+                      <Input
+                        value={material.seoTitle ?? ""}
+                        onChange={(e) =>
+                          setMaterials((prev) =>
+                            prev.map((m, i) =>
+                              i === index ? { ...m, seoTitle: e.target.value } : m
+                            )
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>תיאור SEO</Label>
+                      <Textarea
+                        value={material.seoDescription ?? ""}
+                        onChange={(e) =>
+                          setMaterials((prev) =>
+                            prev.map((m, i) =>
+                              i === index ? { ...m, seoDescription: e.target.value } : m
+                            )
+                          )
+                        }
+                        rows={2}
+                      />
+                    </div>
                   </div>
                   <ImageField
                     id={`material-${material.id}`}

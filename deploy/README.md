@@ -60,7 +60,9 @@ Server names:
 
 Upstream: `127.0.0.1:3012`
 
-Cloudflare SSL mode: **Flexible** (orange cloud proxied).
+TLS: origin self-signed cert at `/etc/nginx/ssl/ironman.{pem,key}` for Cloudflare **Full**. Prefer **Full** (not Full Strict) unless you replace that cert with a real one.
+
+Cloudflare SSL mode: **Full** or **Flexible**.
 
 ## PM2
 

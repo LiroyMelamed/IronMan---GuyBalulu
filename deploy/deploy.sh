@@ -139,8 +139,20 @@ front_ssh "bash -lc '
 '"
 
 echo "# Nginx ${DOMAIN}…"
+# Self-signed origin cert for Cloudflare SSL "Full" (HTTPS → origin :443).
+front_ssh "bash -lc '
+  set -euo pipefail
+  mkdir -p /etc/nginx/ssl
+  if [[ ! -f /etc/nginx/ssl/ironman.pem || ! -f /etc/nginx/ssl/ironman.key ]]; then
+    openssl req -x509 -nodes -newkey rsa:2048 -days 825 \
+      -keyout /etc/nginx/ssl/ironman.key \
+      -out /etc/nginx/ssl/ironman.pem \
+      -subj \"/CN=${DOMAIN}\" \
+      -addext \"subjectAltName=DNS:${DOMAIN},DNS:www.${DOMAIN},DNS:ironman.mela-media.co.il,DNS:ironman.co.il,DNS:www.ironman.co.il\"
+  fi
+'"
 NGX_TMP="$(mktemp)"
-sed "s/ironman.mela-media.co.il/${DOMAIN}/g" "$ROOT/deploy/nginx-ironman.conf" > "$NGX_TMP"
+cp "$ROOT/deploy/nginx-ironman.conf" "$NGX_TMP"
 front_scp "$NGX_TMP" "/etc/nginx/sites-available/ironman"
 rm -f "$NGX_TMP"
 front_ssh "ln -sfn /etc/nginx/sites-available/ironman /etc/nginx/sites-enabled/ironman && nginx -t && systemctl reload nginx"

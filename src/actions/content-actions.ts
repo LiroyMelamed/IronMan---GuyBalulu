@@ -72,6 +72,14 @@ const materialSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   keyword: z.string().min(1),
+  slug: z
+    .string()
+    .min(1)
+    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens"),
+  longDescription: z.string().default(""),
+  priceRange: z.string().optional().nullable(),
+  seoTitle: z.string().optional().nullable(),
+  seoDescription: z.string().optional().nullable(),
   icon: z.string().default("metal"),
   imageUrl: z.string().optional().nullable(),
   sortOrder: z.number().default(0),
@@ -96,14 +104,17 @@ export async function upsertMaterial(data: z.infer<typeof materialSchema>) {
 
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath(`/materials/${rest.slug}`);
   return { success: true };
 }
 
 export async function deleteMaterial(id: string) {
   await requireAuth();
+  const existing = await prisma.material.findUnique({ where: { id }, select: { slug: true } });
   await prisma.material.delete({ where: { id } });
   revalidatePath("/");
   revalidatePath("/admin");
+  if (existing?.slug) revalidatePath(`/materials/${existing.slug}`);
   return { success: true };
 }
 

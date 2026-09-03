@@ -17,6 +17,7 @@ interface MaterialsSectionProps {
     description: string;
     icon: string;
     keyword: string;
+    slug: string;
     imageUrl?: string | null;
     sortOrder: number;
   }[];
@@ -44,8 +45,8 @@ export function MaterialsSection({ content, materials }: MaterialsSectionProps) 
               key={material.id}
               title={material.title}
               description={material.description}
-              footerLabel="צור קשר"
-              href="#contact"
+              footerLabel="פרטים"
+              href={`/materials/${material.slug}`}
               hideTitle
               image={
                 <>

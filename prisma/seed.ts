@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 import { DEFAULT_CONTENT_ITEMS } from "../src/lib/content";
+import { MATERIAL_SEO_DEFAULTS } from "../src/lib/material-seo-defaults";
 
 const prisma = new PrismaClient();
 
@@ -39,15 +40,25 @@ async function main() {
   }
 
   const materials = [
-    { title: "קניית ברזל", description: "רכישת ברזל, פסולת ברזל, קonstruksiya וברזל מבנים במחירים תחרותיים.", icon: "iron", keyword: "קניית ברזל", imageUrl: MATERIAL_IMAGES.iron, sortOrder: 0 },
+    { title: "קניית ברזל", description: "רכישת ברזל, פסולת ברזל, קונסטרוקציה וברזל מבנים במחירים תחרותיים.", icon: "iron", keyword: "קניית ברזל", imageUrl: MATERIAL_IMAGES.iron, sortOrder: 0 },
     { title: "קניית נחושת", description: "קונים נחושת, כבלי נחושת, צינורות וכל סוגי פסולת הנחושת.", icon: "copper", keyword: "קניית נחושת", imageUrl: MATERIAL_IMAGES.copper, sortOrder: 1 },
     { title: "קניית אלומיניום", description: "רכישת אלומיניום, פרופילים, שאריות ייצור ופסולת אלומיניום.", icon: "aluminum", keyword: "קניית אלומיניום", imageUrl: MATERIAL_IMAGES.aluminum, sortOrder: 2 },
     { title: "קניית מצברים", description: "קונים מצברים ישנים, סוללות רכב וסוללות תעשייתיות למחזור.", icon: "battery", keyword: "קניית מצברים", imageUrl: MATERIAL_IMAGES.battery, sortOrder: 3 },
     { title: "קניית כבלי חשמל", description: "רכישת כבלי חשמל, כבלי תקשורת ופסולת חשמלית מכל סוג.", icon: "cable", keyword: "קניית כבלי חשמל", imageUrl: MATERIAL_IMAGES.cable, sortOrder: 4 },
     { title: "קניית פליז", description: "קונים פליז, שבבי פליז, ברזים ורכיבי פליז ישנים.", icon: "brass", keyword: "קניית פליז", imageUrl: MATERIAL_IMAGES.brass, sortOrder: 5 },
-    { title: "קניית מנועי חשמל", description: "רכישת מנועי חשמל, ממסרים, טransפורמטורים וציוד חשמלי תעשייתי.", icon: "motor", keyword: "קניית מנועי חשמל", imageUrl: MATERIAL_IMAGES.motor, sortOrder: 6 },
+    { title: "קניית מנועי חשמל", description: "רכישת מנועי חשמל, ממסרים, טרנספורמטורים וציוד חשמלי תעשייתי.", icon: "motor", keyword: "קניית מנועי חשמל", imageUrl: MATERIAL_IMAGES.motor, sortOrder: 6 },
     { title: "קניית מזגנים למחזור", description: "קונים מזגנים ישנים, יחידות HVAC וציוד קירור למחזור.", icon: "ac", keyword: "קניית מזגנים למחזור", imageUrl: MATERIAL_IMAGES.ac, sortOrder: 7 },
-  ];
+  ].map((item) => {
+    const seo = MATERIAL_SEO_DEFAULTS[item.icon];
+    return {
+      ...item,
+      slug: seo.slug,
+      longDescription: seo.longDescription,
+      priceRange: seo.priceRange,
+      seoTitle: seo.seoTitle,
+      seoDescription: seo.seoDescription,
+    };
+  });
 
   await prisma.material.deleteMany();
   await prisma.material.createMany({ data: materials });
@@ -64,13 +75,18 @@ async function main() {
   await prisma.seoMetadata.deleteMany();
   await prisma.seoMetadata.create({
     data: {
-      pageTitle: "קונה מתכות | קניית ברזל, נחושת, אלומיניום | פינוי מפעלים",
-      metaDescription: "איש הברזל — קונה מתכות בישראל. קניית ברזל, קניית נחושת, קניית אלומיניום, קניית מצברים, קניית כבלי חשמל, קניית פליז, קניית מנועי חשמל, קניית מזגנים למחזור. פינוי מפעלים ופרויקטי פינוי בינוי.",
-      keywords: "קניית ברזל, קניית נחושת, קניית אלומיניום, קניית מצברים, קניית כבלי חשמל, קניית פליז, קניית מנועי חשמל, קניית מזגנים למחזור, פינוי מפעלים, פרויקטי פינוי בינוי, קונה מתכות",
-      ogTitle: "קונה מתכות — איש הברזל | קניית מתכות ופינוי מפעלים",
-      ogDescription: "מחפשים למכור מתכות? אנחנו קונים ברזל, נחושת, אלומיניום, מצברים, כבלי חשמל, פליז, מנועי חשמל ומזגנים. פינוי מפעלים ופרויקטי בינוי.",
-      canonicalUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-      businessName: "איש הברזל — קניית מתכות",
+      pageTitle:
+        "קונה מתכות ופינוי מפעלים | קניית ברזל ונחושת — איש הברזל",
+      metaDescription:
+        "קונה מתכות מקצועי — אנו קונים ברזל, נחושת, אלומיניום, מצברים וכבלי חשמל. מתמחים בפינוי מפעלים, אתרי בנייה ופסולת תעשייתית. תשלום הוגן ומיידי. צרו קשר.",
+      keywords:
+        "קונה מתכות, פינוי מפעלים, פירוק תשתיות מתכת, קבלן פינוי מפעלים, פינוי ברזל מאתרי בנייה, קונה פסולת תעשייתית, קונה נחושת, קניית כבלי חשמל, מחיר נחושת לקילו למחזור, קניית אלומיניום, קונה פליז, קונה ברזל, קניית מצברים ישנים, קניית מנועי חשמל, קונה מזגנים למחזור, פינוי פסולת ברזל, קניית ברזל, קניית נחושת, פינוי בינוי",
+      ogTitle:
+        "קונה מתכות ופינוי מפעלים | איש הברזל — קניית ברזל ונחושת",
+      ogDescription:
+        "קונה מתכות מקצועי — אנו קונים ברזל, נחושת, אלומיניום, מצברים וכבלי חשמל. מתמחים בפינוי מפעלים, אתרי בנייה ופסולת תעשייתית. תשלום הוגן ומיידי. צרו קשר.",
+      canonicalUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://theironman.co.il",
+      businessName: "איש הברזל — קניית מתכות ופינוי מפעלים",
       businessPhone: "+972 50-756-2842",
       businessEmail: "info@ironman.co.il",
       businessAddress: "המסגר 34",

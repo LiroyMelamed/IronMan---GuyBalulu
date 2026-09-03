@@ -1,5 +1,7 @@
 import { prisma } from "./prisma";
 import { cache } from "react";
+import { getMaterialSeoDefaults } from "@/lib/material-seo-defaults";
+import { getDefaultSeoRecord, type SeoRecord } from "@/lib/seo";
 
 export type SiteContentMap = Record<string, string>;
 
@@ -37,13 +39,30 @@ export const getProjects = cache(async () => {
   }
 });
 
-export const getSeoMetadata = cache(async () => {
+/**
+ * Canonical SEO record for Israel buy-side metal / factory-clearing queries.
+ * Falls back to optimized Hebrew defaults when the DB is unavailable.
+ */
+export const getSeoMetadata = cache(async (): Promise<SeoRecord> => {
+  const defaults = getDefaultSeoRecord();
   try {
     const seo = await prisma.seoMetadata.findFirst();
-    if (seo) return seo;
-    return getDefaultSeo();
+    if (!seo) return defaults;
+
+    // Prefer stored CMS values, but never leave critical SEO fields empty.
+    return {
+      ...defaults,
+      ...seo,
+      pageTitle: seo.pageTitle?.trim() || defaults.pageTitle,
+      metaDescription: seo.metaDescription?.trim() || defaults.metaDescription,
+      keywords: seo.keywords?.trim() || defaults.keywords,
+      ogTitle: seo.ogTitle?.trim() || defaults.ogTitle,
+      ogDescription: seo.ogDescription?.trim() || defaults.ogDescription,
+      canonicalUrl: seo.canonicalUrl?.trim() || defaults.canonicalUrl,
+      businessName: seo.businessName?.trim() || defaults.businessName,
+    };
   } catch {
-    return getDefaultSeo();
+    return defaults;
   }
 });
 
@@ -101,104 +120,109 @@ export function mergeContentItems(items: SiteContentItem[]): SiteContentItem[] {
   });
 }
 
+function buildDefaultMaterial(
+  id: string,
+  title: string,
+  description: string,
+  icon: string,
+  keyword: string,
+  imageUrl: string,
+  sortOrder: number
+) {
+  const seo = getMaterialSeoDefaults(icon);
+  return {
+    id,
+    title,
+    description,
+    icon,
+    keyword,
+    imageUrl,
+    sortOrder,
+    isActive: true,
+    slug: seo?.slug ?? icon,
+    longDescription: seo?.longDescription ?? description,
+    priceRange: seo?.priceRange ?? null,
+    seoTitle: seo?.seoTitle ?? null,
+    seoDescription: seo?.seoDescription ?? null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
+
 function getDefaultMaterials() {
   return [
-    {
-      id: "1",
-      title: "קניית ברזל",
-      description: "רכישת ברזל, פסולת ברזל, קonstruksiya וברזל מבנים במחירים תחרותיים.",
-      icon: "iron",
-      keyword: "קניית ברזל",
-      imageUrl: "/images/materials/iron.jpg",
-      sortOrder: 0,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "2",
-      title: "קניית נחושת",
-      description: "קונים נחושת, כבלי נחושת, צינורות וכל סוגי פסולת הנחושת.",
-      icon: "copper",
-      keyword: "קניית נחושת",
-      imageUrl: "/images/materials/copper.jpg",
-      sortOrder: 1,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "3",
-      title: "קניית אלומיניום",
-      description: "רכישת אלומיניום, פרופילים, שאריות ייצור ופסולת אלומיניום.",
-      icon: "aluminum",
-      keyword: "קניית אלומיניום",
-      imageUrl: "/images/materials/aluminum.jpg",
-      sortOrder: 2,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "4",
-      title: "קניית מצברים",
-      description: "קונים מצברים ישנים, סוללות רכב וסוללות תעשייתיות למחזור.",
-      icon: "battery",
-      keyword: "קניית מצברים",
-      imageUrl: "/images/materials/battery.jpg",
-      sortOrder: 3,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "5",
-      title: "קניית כבלי חשמל",
-      description: "רכישת כבלי חשמל, כבלי תקשורת ופסולת חשמלית מכל סוג.",
-      icon: "cable",
-      keyword: "קניית כבלי חשמל",
-      imageUrl: "/images/materials/cable.jpg",
-      sortOrder: 4,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "6",
-      title: "קניית פליז",
-      description: "קונים פליז, שבבי פליז, ברזים ורכיבי פליז ישנים.",
-      icon: "brass",
-      keyword: "קניית פליז",
-      imageUrl: "/images/materials/brass.jpg",
-      sortOrder: 5,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "7",
-      title: "קניית מנועי חשמל",
-      description: "רכישת מנועי חשמל, ממסרים, טרנספורמטורים וציוד חשמלי תעשייתי.",
-      icon: "motor",
-      keyword: "קניית מנועי חשמל",
-      imageUrl: "/images/materials/motor.jpg",
-      sortOrder: 6,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "8",
-      title: "קניית מזגנים למחזור",
-      description: "קונים מזגנים ישנים, יחידות HVAC וציוד קירור למחזור.",
-      icon: "ac",
-      keyword: "קניית מזגנים למחזור",
-      imageUrl: "/images/materials/ac.jpg",
-      sortOrder: 7,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
+    buildDefaultMaterial(
+      "1",
+      "קניית ברזל",
+      "רכישת ברזל, פסולת ברזל, קונסטרוקציה וברזל מבנים במחירים תחרותיים.",
+      "iron",
+      "קניית ברזל",
+      "/images/materials/iron.jpg",
+      0
+    ),
+    buildDefaultMaterial(
+      "2",
+      "קניית נחושת",
+      "קונים נחושת, כבלי נחושת, צינורות וכל סוגי פסולת הנחושת.",
+      "copper",
+      "קניית נחושת",
+      "/images/materials/copper.jpg",
+      1
+    ),
+    buildDefaultMaterial(
+      "3",
+      "קניית אלומיניום",
+      "רכישת אלומיניום, פרופילים, שאריות ייצור ופסולת אלומיניום.",
+      "aluminum",
+      "קניית אלומיניום",
+      "/images/materials/aluminum.jpg",
+      2
+    ),
+    buildDefaultMaterial(
+      "4",
+      "קניית מצברים",
+      "קונים מצברים ישנים, סוללות רכב וסוללות תעשייתיות למחזור.",
+      "battery",
+      "קניית מצברים",
+      "/images/materials/battery.jpg",
+      3
+    ),
+    buildDefaultMaterial(
+      "5",
+      "קניית כבלי חשמל",
+      "רכישת כבלי חשמל, כבלי תקשורת ופסולת חשמלית מכל סוג.",
+      "cable",
+      "קניית כבלי חשמל",
+      "/images/materials/cable.jpg",
+      4
+    ),
+    buildDefaultMaterial(
+      "6",
+      "קניית פליז",
+      "קונים פליז, שבבי פליז, ברזים ורכיבי פליז ישנים.",
+      "brass",
+      "קניית פליז",
+      "/images/materials/brass.jpg",
+      5
+    ),
+    buildDefaultMaterial(
+      "7",
+      "קניית מנועי חשמל",
+      "רכישת מנועי חשמל, ממסרים, טרנספורמטורים וציוד חשמלי תעשייתי.",
+      "motor",
+      "קניית מנועי חשמל",
+      "/images/materials/motor.jpg",
+      6
+    ),
+    buildDefaultMaterial(
+      "8",
+      "קניית מזגנים למחזור",
+      "קונים מזגנים ישנים, יחידות HVAC וציוד קירור למחזור.",
+      "ac",
+      "קניית מזגנים למחזור",
+      "/images/materials/ac.jpg",
+      7
+    ),
   ];
 }
 
@@ -243,30 +267,8 @@ function getDefaultProjects() {
   ];
 }
 
-function getDefaultSeo() {
-  return {
-    id: "default",
-    pageTitle: "קונה מתכות | קניית ברזל, נחושת, אלומיניום | פינוי מפעלים",
-    metaDescription:
-      "איש הברזל — קונה מתכות בישראל. קניית ברזל, קניית נחושת, קניית אלומיניום, קניית מצברים, קניית כבלי חשמל, קניית פליז, קניית מנועי חשמל, קניית מזגנים למחזור. פינוי מפעלים ופרויקטי פינוי בינוי.",
-    keywords:
-      "קניית ברזל, קניית נחושת, קניית אלומיניום, קניית מצברים, קניית כבלי חשמל, קניית פליז, קניית מנועי חשמל, קניית מזגנים למחזור, פינוי מפעלים, פרויקטי פינוי בינוי, קונה מתכות",
-    ogTitle: "קונה מתכות — איש הברזל | קניית מתכות ופינוי מפעלים",
-    ogDescription:
-      "מחפשים למכור מתכות? אנחנו קונים ברזל, נחושת, אלומיניום, מצברים, כבלי חשמל, פליז, מנועי חשמל ומזגנים. פינוי מפעלים ופרויקטי בינוי.",
-    canonicalUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    businessName: "איש הברזל — קניית מתכות",
-    businessPhone: "+972 50-756-2842",
-    businessEmail: "info@ironman.co.il",
-    businessAddress: "המסגר 34",
-    businessCity: "נתניה",
-    businessRegion: "השרון",
-    businessPostal: "4240202",
-    latitude: 32.3315,
-    longitude: 34.8568,
-    updatedAt: new Date(),
-    createdAt: new Date(),
-  };
+function getDefaultSeo(): SeoRecord {
+  return getDefaultSeoRecord();
 }
 
 export function getContentValue(
