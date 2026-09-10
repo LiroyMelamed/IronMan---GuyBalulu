@@ -24,7 +24,11 @@ ensure_jump_key() {
 }
 
 use_jump=true
-if ssh -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=8 "$FRONT" "echo ok" >/dev/null 2>&1; then
+if [[ "${IRONMAN_FORCE_DIRECT:-0}" == "1" ]]; then
+  use_jump=false
+elif [[ "${IRONMAN_FORCE_JUMP:-0}" == "1" ]]; then
+  use_jump=true
+elif ssh -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=8 "$FRONT" "echo ok" >/dev/null 2>&1; then
   use_jump=false
 fi
 
@@ -74,6 +78,10 @@ fi
 ADMIN_PASSWORD="$(read_env_val "$REMOTE_ENV_SNIP" ADMIN_PASSWORD)"
 ADMIN_PASSWORD="${ADMIN_PASSWORD:-ChangeMe123!}"
 
+CENTRAL_SERVICE_KEY_VAL="$(read_env_val "$ROOT/.env" CENTRAL_SERVICE_KEY)"
+CENTRAL_SERVICE_KEY_VAL="${CENTRAL_SERVICE_KEY_VAL:-$(read_env_val "$ROOT/../central-platform/.env" CENTRAL_SERVICE_KEY)}"
+CENTRAL_SERVICE_KEY_VAL="${CENTRAL_SERVICE_KEY_VAL:-$(read_env_val "$REMOTE_ENV_SNIP" CENTRAL_SERVICE_KEY)}"
+
 SITE_URL="https://${DOMAIN}"
 rm -f "$REMOTE_ENV_SNIP"
 
@@ -109,6 +117,9 @@ NEXT_PUBLIC_WHATSAPP_NUMBER=972507562842
 ADMIN_EMAIL=admin@ironman.co.il
 ADMIN_PASSWORD=${ADMIN_PASSWORD}
 EOF
+if [[ -n "${CENTRAL_SERVICE_KEY_VAL:-}" ]]; then
+  echo "CENTRAL_SERVICE_KEY=${CENTRAL_SERVICE_KEY_VAL}" >> "$ENV_TMP"
+fi
 
 echo "# Writing production env…"
 front_scp "$ENV_TMP" "${REMOTE_DIR}/.env.production"
@@ -166,3 +177,7 @@ echo "# Deploy complete."
 echo "  URL:  https://${DOMAIN}"
 echo "  Admin: https://${DOMAIN}/admin"
 echo "  Login: admin@ironman.co.il / ${ADMIN_PASSWORD}"
+
+# shellcheck source=../../scripts/deploy-notify.sh
+source "$ROOT/../scripts/deploy-notify.sh"
+DEPLOY_ROOT="$ROOT" notify_central_deploy ironman "web+admin"
