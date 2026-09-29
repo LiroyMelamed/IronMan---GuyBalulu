@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Send, Mail, MapPin } from "lucide-react";
+import { MessageCircle, Mail, MapPin } from "lucide-react";
 import {
   TerexSection,
   TerexSectionHeader,
@@ -41,8 +41,9 @@ export function ContactSection({
     return encodeURIComponent(text || "שלום, אני מעוניין/ת למכור מתכות. אשמח לקבל הצעת מחיר.");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!e.currentTarget.checkValidity()) { e.currentTarget.reportValidity(); return; }
     window.open(`https://wa.me/${whatsappNumber}?text=${buildWhatsAppMessage()}`, "_blank", "noopener,noreferrer");
   };
 
@@ -69,7 +70,7 @@ export function ContactSection({
         >
           <TerexPanel dark className="p-8 md:p-10">
             <TerexLabel className="!text-white/70 mb-10 block">טופס פנייה</TerexLabel>
-            <form onSubmit={handleSubmit} className="space-y-5 pt-2" noValidate>
+            <form onSubmit={handleSubmit} className="space-y-5 pt-2">
               {(
                 [
                   { id: "name", label: "שם מלא", type: "text", placeholder: "הכנסו את שמכם", required: true },
@@ -111,10 +112,7 @@ export function ContactSection({
                   <MessageCircle className="h-4 w-4 ml-2" aria-hidden="true" />
                   {getContentValue(content, "contact_whatsapp_cta")}
                 </TerexButton>
-                <TerexButton type="submit" variant="white">
-                  <Send className="h-4 w-4 ml-2" aria-hidden="true" />
-                  שליחה
-                </TerexButton>
+
               </div>
             </form>
           </TerexPanel>
