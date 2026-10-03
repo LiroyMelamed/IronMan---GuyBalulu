@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Mail, MapPin } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import {
   TerexSection,
   TerexSectionHeader,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/terex";
 import { getContentValue, getManagersFromContent, type SiteContentMap } from "@/lib/content";
 import { phoneToTel } from "@/lib/contacts";
+import { validateContact } from "@/lib/contact-validation";
 
 interface ContactSectionProps {
   content: SiteContentMap;
@@ -44,6 +45,13 @@ export function ContactSection({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!e.currentTarget.checkValidity()) { e.currentTarget.reportValidity(); return; }
+    const invalid = validateContact(formData.name, formData.phone);
+    if (invalid) {
+      const input = e.currentTarget.elements.namedItem(invalid.field) as HTMLInputElement;
+      input.setCustomValidity(invalid.message);
+      input.reportValidity();
+      return;
+    }
     window.open(`https://wa.me/${whatsappNumber}?text=${buildWhatsAppMessage()}`, "_blank", "noopener,noreferrer");
   };
 
@@ -84,12 +92,13 @@ export function ContactSection({
                   </label>
                   <input
                     id={field.id}
+                    name={field.id}
                     type={field.type}
                     placeholder={field.placeholder}
                     required={"required" in field ? field.required : false}
                     dir={"dir" in field ? field.dir : undefined}
                     value={formData[field.id as keyof typeof formData]}
-                    onChange={(e) => setFormData({ ...formData, [field.id]: e.target.value })}
+                    onChange={(e) => { e.target.setCustomValidity(""); setFormData({ ...formData, [field.id]: e.target.value }); }}
                     className={`${inputClass} ${"dir" in field ? "text-left" : ""}`}
                   />
                 </div>
