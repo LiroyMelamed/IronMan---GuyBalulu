@@ -36,3 +36,13 @@ next-env.d.ts
 
 # Admin uploads
 /public/uploads/
+
+# Environment files stay local; commit reviewed templates only.
+.env
+.env.*
+!**/.env.example
+!**/.env.*.example
+!**/.env.sample
+!**/.env.*.sample
+!**/.env.template
+!**/.env.*.template
