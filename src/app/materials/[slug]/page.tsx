@@ -7,6 +7,7 @@ import { PageBackground } from "@/components/layout/PageBackground";
 import { TerexHeroBackdrop, TerexLabel, TerexButton } from "@/components/ui/terex";
 import { TerexImage } from "@/components/ui/terex-image";
 import { MaterialOfferJsonLd } from "@/components/seo/MaterialOfferJsonLd";
+import { MaterialBuyingGuide } from "@/components/sections/MaterialBuyingGuide";
 import { getSiteContent } from "@/lib/content";
 import { resolveMaterialImage } from "@/lib/images";
 import {
@@ -152,6 +153,7 @@ export default async function MaterialPage({ params }: PageProps) {
           </section>
 
           {/* Bottom CTA strip */}
+          <MaterialBuyingGuide slug={material.slug} />
           <section className="bg-terex-navy py-16 md:py-20">
             <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-6 md:flex-row md:items-center md:px-12 lg:px-16">
               <div>
