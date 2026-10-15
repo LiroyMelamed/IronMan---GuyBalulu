@@ -11,6 +11,7 @@ import { MaterialsSection } from "@/components/sections/MaterialsSection";
 import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { LocalBusinessJsonLd } from "@/components/seo/JsonLd";
+import { BuyingGuideSection } from "@/components/sections/BuyingGuideSection";
 
 export default async function HomePage() {
   const [content, materials, projects, seo] = await Promise.all([
@@ -43,6 +44,7 @@ export default async function HomePage() {
           <HeroSection content={content} />
           <MaterialsSection content={content} materials={materials} />
           <ProjectsSection content={content} projects={projects} />
+          <BuyingGuideSection />
           <ContactSection
             content={content}
             businessEmail={seo.businessEmail}
