@@ -1,0 +1,79 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Reviewed source, design documents and evidence must remain versioned.
+
+# BEGIN reviewed Git completeness — 2026-10-15
+# Runtime environment values and credentials stay on this computer.
+.env
+.env.*
+*.env
+.xcode.env.local
+*.p12
+*.p8
+*.pem
+*.key
+*.jks
+*.keystore
+*.mobileprovision
+*.provisionprofile
+credentials.json
+service-account.json
+serviceaccount.json
+.qa-sessions.json
+.role-parity-restore.json
+.claude/settings.local.json
+**/.storage/
+**/browser-profile/
+# Rebuildable dependencies, caches, synchronization state and binary releases.
+node_modules/
+.pnpm-store/
+.next/
+.turbo/
+.gradle/
+.expo/
+.parcel-cache/
+.cache/
+.venv/
+venv/
+Pods/
+DerivedData/
+.stfolder/
+.stversions/
+.stignore
+.DS_Store
+*.tsbuildinfo
+*.hbc
+*.ipa
+*.apk
+*.aab
+*.aar
+*.xcuserstate
+**/xcuserdata/
+.impeccable/hook.cache.json
+# END common exclusions
+
+# Files with private operational/customer data or packaged runtime output.
+
+# END reviewed Git completeness
