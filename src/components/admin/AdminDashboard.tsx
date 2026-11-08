@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageField } from "@/components/admin/ImageField";
-import { mergeContentItems, type SiteContentItem } from "@/lib/content";
+import { mergeContentItems, type SiteContentItem } from "@/lib/content-values";
 import {
   updateAllContent,
   updateSeoMetadata,

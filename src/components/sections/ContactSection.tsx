@@ -10,7 +10,7 @@ import {
   TerexLabel,
   TerexButton,
 } from "@/components/ui/terex";
-import { getContentValue, getManagersFromContent, type SiteContentMap } from "@/lib/content";
+import { getContentValue, getManagersFromContent, type SiteContentMap } from "@/lib/content-values";
 import { phoneToTel } from "@/lib/contacts";
 import { validateContact } from "@/lib/contact-validation";
 

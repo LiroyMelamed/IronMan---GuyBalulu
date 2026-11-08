@@ -4,7 +4,7 @@ import Link from "next/link";
 import { TerexLabel, TerexButton } from "@/components/ui/terex";
 import { TerexImage } from "@/components/ui/terex-image";
 import { FALLBACK_HERO_IMAGE } from "@/lib/site-images";
-import { getContentValue, type SiteContentMap } from "@/lib/content";
+import { getContentValue, type SiteContentMap } from "@/lib/content-values";
 
 interface HeroSectionProps {
   content: SiteContentMap;

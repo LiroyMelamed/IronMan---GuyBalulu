@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { getContentValue, type SiteContentMap } from "@/lib/content";
+import { getContentValue, type SiteContentMap } from "@/lib/content-values";
 import { NavbarClient, FooterClient } from "./NavbarClient";
 
 interface NavbarProps {
