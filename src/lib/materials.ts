@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getMaterialSeoDefaults } from "@/lib/material-seo-defaults";
 import { getOgImageUrl, getSiteBaseUrl } from "@/lib/seo";
 import type { Metadata } from "next";
+import { COPPER_BUYING } from "./copper-buying";
 
 export type MaterialPageData = {
   id: string;
@@ -61,10 +62,12 @@ export const getActiveMaterialSlugs = cache(async (): Promise<string[]> => {
 });
 
 export function buildMaterialPageTitle(material: MaterialPageData): string {
+  if (material.slug === COPPER_BUYING.slug) return COPPER_BUYING.title;
   return material.seoTitle ?? `${material.title} — איש הברזל`;
 }
 
 export function buildMaterialMetaDescription(material: MaterialPageData): string {
+  if (material.slug === COPPER_BUYING.slug) return COPPER_BUYING.description;
   return material.seoDescription ?? material.description;
 }
 
@@ -119,7 +122,9 @@ export function buildMaterialWhatsAppUrl(material: MaterialPageData): string {
   const number =
     process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || "972507562842";
   const text = encodeURIComponent(
-    `שלום, אני מעוניין/ת למכור ${material.title}. אשמח לקבל הצעת מחיר מעודכנת להיום.`
+    material.slug === COPPER_BUYING.slug
+      ? COPPER_BUYING.whatsappMessage
+      : `שלום, אני מעוניין/ת למכור ${material.title}. אשמח לקבל הצעת מחיר מעודכנת להיום.`
   );
   return `https://wa.me/${number}?text=${text}`;
 }
