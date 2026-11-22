@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { IshHaBarzelLogo } from "@/components/brand/IshHaBarzelLogo";
 import { PoweredByMelaMedia } from "@/components/layout/PoweredByMelaMedia";
 import { TerexButton } from "@/components/ui/terex";
-import { getContentValue, type SiteContentMap } from "@/lib/content";
+import { getContentValue, type SiteContentMap } from "@/lib/content-values";
 
 export function NavbarClient({ content }: { content: SiteContentMap }) {
   return (

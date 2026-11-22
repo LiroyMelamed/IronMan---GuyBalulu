@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/terex";
 import { TerexImage } from "@/components/ui/terex-image";
 import { resolveMaterialImage } from "@/lib/images";
-import { getContentValue, getValueBlocksFromContent, type SiteContentMap } from "@/lib/content";
+import { getContentValue, getValueBlocksFromContent, type SiteContentMap } from "@/lib/content-values";
 
 interface MaterialsSectionProps {
   content: SiteContentMap;

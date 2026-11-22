@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/terex";
 import { TerexImage } from "@/components/ui/terex-image";
 import { resolveProjectImage } from "@/lib/images";
-import { getContentValue, type SiteContentMap } from "@/lib/content";
+import { getContentValue, type SiteContentMap } from "@/lib/content-values";
 
 interface ProjectsSectionProps {
   content: SiteContentMap;
