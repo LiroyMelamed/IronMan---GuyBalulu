@@ -38,7 +38,7 @@ export function BuyingGuideSection() {
               לפני שסוגרים, מבררים מה כוללת ההצעה ואיך ייקבע המשקל לתשלום.
             </p>
             <p className="mt-4 leading-relaxed text-terex-muted">
-              אפשר לקרוא עוד על <Link href="/materials/copper" className="font-bold text-terex-blue underline underline-offset-4">קניית נחושת</Link>,{" "}
+              אפשר לקרוא <Link href="/materials/copper#material-content-heading" className="font-bold text-terex-blue underline underline-offset-4">איך נקבע מחיר נחושת לקילו</Link>, ולקרוא עוד על{" "}
               <Link href="/materials/iron" className="font-bold text-terex-blue underline underline-offset-4">קניית ברזל</Link> ו־{" "}
               <Link href="/materials/aluminum" className="font-bold text-terex-blue underline underline-offset-4">קניית אלומיניום</Link>.
             </p>

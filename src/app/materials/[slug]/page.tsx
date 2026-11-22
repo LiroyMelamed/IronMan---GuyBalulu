@@ -9,6 +9,7 @@ import { TerexImage } from "@/components/ui/terex-image";
 import { MaterialOfferJsonLd } from "@/components/seo/MaterialOfferJsonLd";
 import { MaterialBuyingGuide } from "@/components/sections/MaterialBuyingGuide";
 import { getSiteContent } from "@/lib/content";
+import { COPPER_BUYING } from "@/lib/copper-buying";
 import { resolveMaterialImage } from "@/lib/images";
 import {
   buildMaterialMetadata,
@@ -59,6 +60,7 @@ export default async function MaterialPage({ params }: PageProps) {
 
   const whatsappUrl = buildMaterialWhatsAppUrl(material);
   const imageSrc = resolveMaterialImage(material.imageUrl, material.icon);
+  const copper = material.slug === COPPER_BUYING.slug ? COPPER_BUYING : null;
 
   return (
     <>
@@ -92,10 +94,10 @@ export default async function MaterialPage({ params }: PageProps) {
                     id="material-hero-heading"
                     className="text-2xl font-black leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl"
                   >
-                    {material.title}
+                    {copper?.heading ?? material.title}
                   </h1>
                   <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/75 md:text-base">
-                    {material.description}
+                    {copper?.intro ?? material.description}
                   </p>
                 </div>
 
@@ -120,22 +122,39 @@ export default async function MaterialPage({ params }: PageProps) {
                   id="material-content-heading"
                   className="mt-2 text-2xl font-black text-terex-charcoal md:text-4xl"
                 >
-                  {material.keyword}
+                  {copper?.pricingHeading ?? material.keyword}
                 </h2>
                 <div className="mt-8 border-t border-terex-gray pt-8">
-                  <LongDescription text={material.longDescription} />
+                  {copper ? (
+                    <div className="space-y-6">
+                      {copper.pricingDetails.map((paragraph) => (
+                        <p key={paragraph} className="text-base leading-relaxed text-terex-muted md:text-lg">
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                  ) : <LongDescription text={material.longDescription} />}
                 </div>
               </div>
 
               <aside className="lg:col-span-1">
                 <div className="border-2 border-terex-navy bg-terex-gray p-8 md:p-10">
-                  <TerexLabel>טווח מחיר משוער</TerexLabel>
-                  <p className="mt-4 text-3xl font-black text-terex-navy md:text-4xl">
-                    {material.priceRange ?? "הצעת מחיר לפי שוק"}
-                  </p>
-                  <p className="mt-6 border-t border-terex-navy/20 pt-6 text-sm leading-relaxed text-terex-muted">
-                    שימו לב: מחירי המתכות בבורסה (LME) נתונים לשינויים על בסיס יומי.
-                  </p>
+                  {copper ? (
+                    <>
+                      <h2 className="text-2xl font-black text-terex-navy">{copper.quoteHeading}</h2>
+                      <p className="mt-4 text-sm leading-relaxed text-terex-muted">{copper.quoteDetails}</p>
+                    </>
+                  ) : (
+                    <>
+                      <TerexLabel>טווח מחיר משוער</TerexLabel>
+                      <p className="mt-4 text-3xl font-black text-terex-navy md:text-4xl">
+                        {material.priceRange ?? "הצעת מחיר לפי שוק"}
+                      </p>
+                      <p className="mt-6 border-t border-terex-navy/20 pt-6 text-sm leading-relaxed text-terex-muted">
+                        שימו לב: מחירי המתכות בבורסה (LME) נתונים לשינויים על בסיס יומי.
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 <div className="mt-8">
@@ -145,7 +164,7 @@ export default async function MaterialPage({ params }: PageProps) {
                     className="w-full py-5 text-sm md:text-base"
                   >
                     <MessageCircle className="ml-2 h-5 w-5" aria-hidden="true" />
-                    לקבלת הצעת מחיר מעודכנת להיום ב-WhatsApp
+                    {copper?.quoteButton ?? "לקבלת הצעת מחיר מעודכנת להיום ב-WhatsApp"}
                   </TerexButton>
                 </div>
               </aside>
@@ -159,15 +178,19 @@ export default async function MaterialPage({ params }: PageProps) {
               <div>
                 <TerexLabel className="!text-white/70">צור קשר</TerexLabel>
                 <p className="mt-2 text-xl font-black text-white md:text-2xl">
-                  מוכנים למכור {material.title.replace(/^קניית\s|^קונה\s/, "")}?
+                  {copper
+                    ? "יש לכם נחושת למחזור?"
+                    : `מוכנים למכור ${material.title.replace(/^קניית\s|^קונה\s/, "")}?`}
                 </p>
                 <p className="mt-2 max-w-lg text-sm text-white/75 md:text-base">
-                  תשלום הוגן, איסוף מהיר ושירות מקצועי — אנחנו קונים, לא מוכרים.
+                  {copper
+                    ? "שלחו פרטים ותמונות כדי לברר מחיר ואפשרויות תיאום."
+                    : "תשלום הוגן, איסוף מהיר ושירות מקצועי — אנחנו קונים, לא מוכרים."}
                 </p>
               </div>
               <TerexButton href={whatsappUrl} external variant="white" className="shrink-0 py-5">
                 <MessageCircle className="ml-2 h-5 w-5" aria-hidden="true" />
-                WhatsApp
+                {copper?.quoteButton ?? "WhatsApp"}
               </TerexButton>
             </div>
           </section>
